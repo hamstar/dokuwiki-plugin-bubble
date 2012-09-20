@@ -58,8 +58,8 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
     	$user = $INFO['userinfo'];
     	$login = $INFO['client'];
 
-    	// Don't bubblify admins
-    	if ( array_search($user['grps'], "admin") !== FALSE )
+		// Don't bubblify admins
+		if ( $this->_user_is_admin($user) )
     		return;
 
     	// Don't bubblify existing pages
@@ -83,6 +83,10 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 		$user = $INFO['userinfo'];
 		$login = $INFO['client'];
 
+		// Don't bubblify admins
+    	if ( $this->_user_is_admin($user) )
+    		return;
+
 		// Already in the bubble
 		if ( $INFO['namespace'] == $login )
 			return;
@@ -92,6 +96,11 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 			return;
 
 		msg("You also have a page called $ID in your namespace: <a href='/?id=$login:$ID&do=show'>$login:$ID</a>");
+    }
+
+    private function _user_is_admin( $user ) {
+
+    	return bool( array_search($user['grps'], "admin") )
     }
 
 }
