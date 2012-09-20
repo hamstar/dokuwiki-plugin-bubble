@@ -82,9 +82,18 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 		send_redirect(DOKU_URL."doku.php?id=$login:$ID&do=edit");
     }
 
+    /**
+     * Checks if the current page is in the users page and does a few thing:
+     * 
+     * if the user is already in their namespace - does nothing
+     * if the page doesn't exist - redirect to the same page in their namespace
+     * if the user doesn't have this page in their namespace - do nothing
+     * if the user has this page in their namespace - show message telling them that
+     */
     private function _check_if_page_in_bubble() {
 
     	global $INFO;
+    	$ID = $INFO['id'];
 		$user = $INFO['userinfo'];
 		$login = $INFO['client'];
 
@@ -96,11 +105,16 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 		if ( $INFO['namespace'] == $login )
 			return;
 
-		// User has not this page
-		if ( file_exists(DOKU_DATA."pages/$login/$ID") === FALSE )
+		// Page does not exist, redirect to namespace page
+		if ( $INFO['exists'] === FALSE )
+			send_redirect(DOKU_URL."doku.php?id=$login:$ID");
+
+		// User has not this page, so let them view it in peace
+		if ( file_exists(DOKU_INC."data/pages/$login/$ID") === FALSE )
 			return;
 
-		msg("You also have a page called $ID in your namespace: <a href='/?id=$login:$ID&do=show'>$login:$ID</a>");
+		// show the message
+		msg("You also have a page called $ID in your namespace: <a href='".DOKU_URL."doku.php?id=$login:$ID&do=show'>$login:$ID</a>");
     }
 
     private function _user_is_admin( $user ) {
