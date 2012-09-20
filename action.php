@@ -119,7 +119,7 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 
     private function _user_is_admin( $user ) {
 
-    	return bool( array_search( "admin", $user['grps'] ) );
+    	return is_int( array_search( "admin", $user['grps'] ) );
     }
 
 }
