@@ -29,6 +29,10 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
     		case "edit":
     			$this->_bubblify_page();
     			break;
+    		case "denied":
+    		case "show":
+    			$this->_check_if_page_in_bubble();
+    			break;
     		default:
     			break;
     	}
@@ -58,6 +62,22 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 
 		msg("This page has been saved in your namespace");
     }
+
+    private function _check_if_page_in_bubble() {
+
+    	global $INFO;
+		$user = $INFO['userinfo'];
+		$login = $INFO['client'];
+
+		// Already in the bubble
+		if ( $INFO['namespace'] == $login )
+			return;
+
+		// User has not this page
+		if ( file_exists(DOKU_DATA."pages/$login/$ID") === FALSE )
+			return;
+
+		msg("You also have a page called $ID in your namespace: <a href='/?id=$login:$ID&do=show'>$login:$ID</a>");
     }
 
 }
