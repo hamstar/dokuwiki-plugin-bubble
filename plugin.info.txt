@@ -1,0 +1,7 @@
+base   bubble
+author Robert McLeod
+email  hamstar@telescum.co.nz
+date   2012-09-20
+name   bubble plugin
+desc   Dokuwiki plugin to put users (not admins) in a bubble so they can only create pages within their own namespace
+url    https://github.com/hamstar/dokuwiki-plugin-bubble
