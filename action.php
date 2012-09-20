@@ -52,11 +52,19 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 		msg("exists:".( $INFO['exists'] ? "yes": "no"));
 		msg("ns:".$INFO['namespace']);
     }
+
+    /**
+     * Detects if a user is creating a new page, and if so redirects
+     * them so they are editing the page in their namespace
+     *
+     * i.e. user edits ?id=my_page and is redirected to ?id=username:my_page
+     */
     private function _bubblify_page() {
 
-    	global $INFO;
-    	$user = $INFO['userinfo'];
-    	$login = $INFO['client'];
+		global $INFO;
+		$ID = $INFO['id'];
+		$user = $INFO['userinfo'];
+		$login = $INFO['client'];
 
 		// Don't bubblify admins
 		if ( $this->_user_is_admin($user) )
@@ -70,11 +78,8 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
     	if ( $INFO['namespace'] == $login )
     		return;
 
-    	// Set the page name
-		$ID = "$login:$ID";
-		$INFO['id'] = $ID;
-
-		msg("This page has been saved in your namespace");
+    	// Send them to their own namespace
+		send_redirect(DOKU_URL."doku.php?id=$login:$ID&do=edit");
     }
 
     private function _check_if_page_in_bubble() {
