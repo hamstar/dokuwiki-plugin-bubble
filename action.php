@@ -25,6 +25,8 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 
     public function handle_action_act_preprocess(Doku_Event &$event, $param) {
 
+    	$this->debug_msg();
+
     	switch ( $event->data ) {
     		case "edit":
     			$this->_bubblify_page();
@@ -38,6 +40,18 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
     	}
     }
 
+    private function debug_msg() {
+		
+		global $INFO;
+		$user = $INFO['userinfo'];
+		$login = $INFO['client'];
+		msg("referer:{$_SERVER['HTTP_REFERER']}")
+		msg("login:$login");
+		msg("action:{$event->data}");
+		msg("grps:".implode(",",$user['grps']));
+		msg("exists:".( $INFO['exists'] ? "yes": "no"));
+		msg("ns:".$INFO['namespace']);
+    }
     private function _bubblify_page() {
 
     	global $INFO;
