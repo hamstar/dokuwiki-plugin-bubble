@@ -45,7 +45,7 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 		global $INFO;
 		$user = $INFO['userinfo'];
 		$login = $INFO['client'];
-		msg("referer:{$_SERVER['HTTP_REFERER']}")
+		msg("referer:{$_SERVER['HTTP_REFERER']}");
 		msg("login:$login");
 		msg("action:{$event->data}");
 		msg("grps:".implode(",",$user['grps']));
