@@ -36,19 +36,28 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 
     private function _bubblify_page() {
 
-    	global $USERINFO;
+    	global $INFO;
+    	$user = $INFO['userinfo'];
+    	$login = $INFO['client'];
 
     	// Don't bubblify admins
-    	if ( array_search($USERINFO['grps'], "admin") )
+    	if ( array_search($user['grps'], "admin") !== FALSE )
     		return;
 
     	// Don't bubblify existing pages
-    	if ( $INFO['exists'] )
+    	if ( $INFO['exists'] === TRUE )
+    		return;
+
+    	// The user bubbled themselves
+    	if ( $INFO['namespace'] == $login )
     		return;
 
     	// Set the page name
-   		$ID = $INFO['client'].$ID;
-   		$INFO['id'] = $ID;
+		$ID = "$login:$ID";
+		$INFO['id'] = $ID;
+
+		msg("This page has been saved in your namespace");
+    }
     }
 
 }
