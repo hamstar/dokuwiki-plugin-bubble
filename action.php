@@ -66,6 +66,10 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 		$user = $INFO['userinfo'];
 		$login = $INFO['client'];
 
+		// ignore anon users
+		if ( is_null( $user ) )
+			return false;
+
 		// Don't bubblify admins
 		if ( $this->_user_is_admin($user) )
 			return;
@@ -97,6 +101,10 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 		$user = $INFO['userinfo'];
 		$login = $INFO['client'];
 
+		// ignore anon users
+		if ( is_null( $user ) )
+			return false;
+
 		// Don't bubblify admins
 		if ( $this->_user_is_admin($user) )
 			return;
@@ -118,6 +126,9 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 	}
 
 	private function _user_is_admin( $user ) {
+
+		if ( is_null( $user ) )
+			return false;
 
 		return is_int( array_search( "admin", $user['grps'] ) );
 	}
