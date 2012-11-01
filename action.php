@@ -20,7 +20,13 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 	public function register(Doku_Event_Handler &$controller) {
 
 	   $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'handle_action_act_preprocess');
+	   $controller->register_hook('MEDIA_UPLOAD_FINISH', 'BEFORE', $this, 'handle_media_upload_finish');
    
+	}
+
+	public function handle_media_upload_finish(Doku_Event &$event, $param) {
+
+		$this->_bubblify_media( $event );
 	}
 
 	public function handle_action_act_preprocess(Doku_Event &$event, $param) {
@@ -66,7 +72,7 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 		$user = $INFO['userinfo'];
 		$login = $INFO['client'];
 
-		// ignore anon users
+		gi// ignore anon users
 		if ( is_null( $user ) )
 			return false;
 
@@ -86,6 +92,20 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 		send_redirect(DOKU_URL."doku.php?id=$login:$ID&do=edit");
 	}
 
+	private function _bubblify_media( &$event ) {
+
+		$full_fn = $event->data[1];
+		$fn = stripslashes( $event->data[2] );
+
+		if ( !preg_match("@(.*/data/media)/", $full_fn, $matches ) )
+			return false;
+
+		$full_fn = "{$matches[1]}/$fn";
+
+		$event->data[1] = $full_fn;
+		$event->data[2] = $fn;
+	}
+
 	/**
 	 * Checks if the current page is in the users page and does a few thing:
 	 * 
@@ -101,6 +121,11 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 		$user = $INFO['userinfo'];
 		$login = $INFO['client'];
 
+		// determine the top level namespace
+        $tlns = strstr( $INFO['namespace'], ":" )
+          ? array_shift( explode(":", $INFO['namespace'] ) )
+          : $INFO['namespace'];
+
 		// ignore anon users
 		if ( is_null( $user ) )
 			return false;
@@ -110,7 +135,7 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 			return;
 
 		// Already in the bubble
-		if ( $INFO['namespace'] == $login )
+		if ( $tlns == $login )
 			return;
 
 		// Page does not exist, redirect to namespace page
