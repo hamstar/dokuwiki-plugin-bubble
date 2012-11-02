@@ -72,7 +72,7 @@ class action_plugin_bubble extends DokuWiki_Action_Plugin {
 		$user = $INFO['userinfo'];
 		$login = $INFO['client'];
 
-		gi// ignore anon users
+		// ignore anon users
 		if ( is_null( $user ) )
 			return false;
 
